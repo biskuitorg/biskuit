@@ -1,5 +1,8 @@
 [![biskuit Banner](https://raw.githubusercontent.com/biskuitorg/biskuit-assets/ac2e599b0a83a4ed31d1fc74f47b340a96f61322/brand/biskuit-cover.png)](https://github.com/biskuitorg/biskuit)
 
+> This project IS NOT discontinued.
+> We are working on the conversion from uikit2 to uikit3. We are a small team and do this as a hobby.
+
 # Biskuit CMS
 [![Discord](https://img.shields.io/discord/682566394222477378)](https://discord.gg/aBdqDcE)
 
