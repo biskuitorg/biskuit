@@ -32,7 +32,9 @@ return [
         'table' => '@system_session',
         'cookie' => [
             'name' => 'biskuit_session',
-            'httponly' => true
+            'httponly' => true,
+            'secure' => true,
+            'samesite' => 'Lax'
         ]
 
     ],

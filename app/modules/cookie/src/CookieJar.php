@@ -69,9 +69,11 @@ class CookieJar
      * @param  string $domain
      * @param  bool   $secure
      * @param  bool   $httpOnly
+     * @param  bool   $raw
+     * @param  string $sameSite
      * @return Cookie
      */
-    public function set($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = true)
+    public function set($name, $value, $expire = 0, $path = null, $domain = null, $secure = true, $httpOnly = true, $raw = false, $sameSite = 'Lax')
     {
         if (null === $path) {
             $path = $this->path;
@@ -81,7 +83,7 @@ class CookieJar
             $domain = $this->domain;
         }
 
-        return $this->cookies[$name] = new Cookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
+        return $this->cookies[$name] = new Cookie($name, $value, $expire, $path, $domain, $secure, $httpOnly, $raw, $sameSite);
     }
 
     /**
