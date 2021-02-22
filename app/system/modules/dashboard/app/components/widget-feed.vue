@@ -151,7 +151,6 @@
                                 .then((feed) => {
                                     vm.feed = feed;
                                     vm.status = 'done';
-                                    console.log(feed);
                                 }, (err) => {
                                     vm.status = 'error';
                                 }
