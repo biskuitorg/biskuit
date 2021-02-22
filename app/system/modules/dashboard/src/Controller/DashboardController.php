@@ -5,6 +5,7 @@ namespace Biskuit\Dashboard\Controller;
 use Biskuit\Application as App;
 use Biskuit\Module\Module;
 
+
 /**
  * @Access(admin=true)
  */
@@ -137,5 +138,15 @@ class DashboardController
         $url .= '?' . http_build_query($data);
 
         return App::response(file_get_contents($url), 200, ['Content-Type' => 'application/json']);
+    }
+
+    /**
+     * @Request({"data": "array"})
+     */
+    public function feedAction($data)
+    {
+        $url = $data['url'];
+
+        return App::response(file_get_contents($url), 200, ['Content-Type' => 'application/rss+xml']);
     }
 }
