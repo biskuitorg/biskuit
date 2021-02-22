@@ -142,14 +142,26 @@
                 }
 
                 this.status = 'loading';
-                // TODO: CORS policies might block the request
-                const parser = new RSSParser();
-                parser.parseURL(this.widget.url)
-                    .then((feed) => {
-                        vm.feed = feed;
-                        vm.status = 'done';
-                    }, (err) => {
-                        vm.status = 'error';
+                this.$http.get('admin/dashboard/feed', { params: { data: { url: this.widget.url} } }).then(
+                    function (res) {
+                        const { data } = res;
+                        if (res.status == 200) {
+                            const parser = new RSSParser();
+                            parser.parseString(res.body)
+                                .then((feed) => {
+                                    vm.feed = feed;
+                                    vm.status = 'done';
+                                    console.log(feed);
+                                }, (err) => {
+                                    vm.status = 'error';
+                                }
+                            );
+                        } else {
+                            this.status = 'error';
+                        }
+                    },
+                    function () {
+                        this.status = 'error';
                     }
                 );
             }
