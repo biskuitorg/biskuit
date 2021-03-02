@@ -140,3 +140,158 @@
 .uk-card:hover .pk-panel-badge-bottom-right {
     display: block;
 }
+
+/* Admin: User
+========================================================================== */
+.bk-form-password-toggle {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    margin-top: -6px;
+    font-size: 13px;
+    line-height: 13px;
+    color: #aaa;
+}
+
+.bk-form-password-toggle:hover {
+    color: #aaa;
+    text-decoration: none;
+}
+
+/* Admin: User rights
+========================================================================== */
+.bk-table-min-width-200 {
+    min-width: 200px;
+}
+
+.bk-table-max-width-100 {
+    max-width: 100px;
+}
+
+.bk-table-width-minimum {
+    width: 1px;
+}
+
+.bk-table-text-break {
+    word-break: break-word;
+}
+
+.bk-icon-warning {
+    background-image: url(../../../../assets/images/icon-warning.svg);
+}
+
+
+
+[class*='bk-icon-circle'] {
+    width: 12px;
+    height: 12px;
+    border-radius: 50px;
+    background: @global-muted-color;
+}
+
+.bk-icon-circle-primary { background: @global-primary-background; }
+.bk-icon-circle-success { background: @global-success-background; }
+.bk-icon-circle-danger { background: @global-danger-background; }
+.bk-icon-circle-warning { background: @global-warning-background; }
+
+[class*="bk-icon-"] {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    vertical-align: middle;
+}
+
+/* Admin: User roles
+========================================================================== */
+.bk-width-content,
+.bk-width-sidebar {
+ -moz-box-sizing:border-box;
+ box-sizing:border-box;
+ width:100%
+}
+@media (min-width:768px) {
+ .bk-width-sidebar {
+  width:225px
+ }
+ .bk-width-content {
+  width:calc(100% - 25px - 200px)
+ }
+}
+@media (min-width:960px) {
+ .bk-grid-large {
+  margin-left:-40px
+ }
+ .bk-grid-large>* {
+  padding-left:40px
+ }
+ .bk-grid-large+.bk-grid-large,
+ .bk-grid-large>*>.uk-panel+.uk-panel,
+ .bk-grid-large>.uk-grid-margin {
+  margin-top:40px
+ }
+ .bk-width-sidebar {
+  width:290px
+ }
+ .bk-width-content {
+  width:calc(100% - 290px)
+ }
+}
+@media (min-width:1220px) {
+ .bk-grid-large {
+  margin-left:-50px
+ }
+ .bk-grid-large>* {
+  padding-left:50px
+ }
+ .bk-grid-large+.bk-grid-large,
+ .bk-grid-large>*>.uk-panel+.uk-panel,
+ .bk-grid-large>.uk-grid-margin {
+  margin-top:50px
+ }
+ .bk-width-sidebar {
+  width:300px
+ }
+ .bk-width-content {
+  width:calc(100% - 300px)
+ }
+ .bk-width-sidebar-large .bk-width-sidebar {
+  width:320px
+ }
+ .bk-width-sidebar-large .bk-width-content {
+  width:calc(100% - 320px)
+ }
+}
+
+/* Modifier: Subnav Icon
+========================================================================== */
+
+/*
+ * 1. Needed if in table width minimum
+ * 2. Gutter
+ */
+
+.bk-subnav-icon {
+    /* 1 */
+    -ms-flex-wrap: nowrap;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    /* 2 */
+    margin-left: -10px;
+    margin-top: -10px !important;
+    margin-bottom: 0;
+}
+
+.bk-subnav-icon > * {
+    padding-left: 10px;
+    margin-top: 10px;
+}
+
+.uk-nav-side .bk-subnav-icon > * { padding-left: 5px; }
+
+.bk-subnav-icon > * > * { color: @global-muted-color; }
+
+.bk-subnav-icon > * > :hover,
+.bk-subnav-icon > * > :focus { color: @global-color; }

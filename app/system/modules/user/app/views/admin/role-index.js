@@ -9,11 +9,22 @@ const Roles = {
 
     data: {
         role: {},
-        config: window.$config
+        config: window.$config,
+        reordered: false
     },
 
     mounted() {
-        $(this.$el).on('change.uk.sortable', this.reorder);
+      const vm = this;
+      UIkit.util.on("#sortable-roles", "moved", function(e, sortable) {
+          sortable.items.forEach(function(item, index) {
+              vm.roles[_.findIndex(vm.roles, { id: parseInt(UIkit.util.data(item, "id")) })].priority = index;
+          });
+          vm.Roles.save({ id: 'bulk' }, { roles: vm.roles }).then(function () {
+              this.$notify('Roles reordered.');
+          }, function (data) {
+              this.$notify(data, 'danger');
+          });
+      });
     },
 
     computed: {
@@ -28,7 +39,7 @@ const Roles = {
 
     methods: {
         edit(role) {
-            this.role = $.extend({}, role || {});
+            this.role = Object.assign({}, Vue.util.extend({}, role || {}))
             this.$refs.modal.open();
         },
 
@@ -62,23 +73,6 @@ const Roles = {
                 this.roles.splice(_.findIndex(this.roles, { id: role.id }), 1);
             });
         },
-
-        reorder(e, sortable) {
-            const vm = this;
-            if (!sortable) {
-                return;
-            }
-
-            sortable.element.children().each((index, element) => {
-                vm.roles[_.findIndex(vm.roles, { id: parseInt(element.id) })].priority = index;
-            });
-
-            this.Roles.save({ id: 'bulk' }, { roles: this.roles }).then(function () {
-                this.$notify('Roles reordered.');
-            }, function (data) {
-                this.$notify(data, 'danger');
-            });
-        }
     }
 };
 

@@ -1,6 +1,6 @@
 <template>
-    <div class="uk-grid" data-uk-grid-margin>
-        <div class="uk-width-medium-2-3 uk-width-large-3-4">
+    <div uk-grid>
+        <div class="uk-width-2-3@m uk-width-3-4@l">
             <v-validated-input
                 id="form-username"
                 name="username"
@@ -11,7 +11,6 @@
                 :options="{ elementClass: 'uk-form-width-large' }"
                 v-model="user.username">
             </v-validated-input>
-
             <v-validated-input
                 id="form-name"
                 name="name"
@@ -31,7 +30,7 @@
                 label="Email"
                 autocomplete="new-email"
                 :error-messages="{ required: 'Email cannot be blank.', email: 'Field must be a valid email address.' }"
-                :options="{ elementClass: 'uk-form-width-large' }"
+                :options="{ elementClass: 'uk-form-width-large uk-input' }"
                 v-model.lazy="user.email">
             </v-validated-input>
 
@@ -41,29 +40,25 @@
                     <a href="#" @click.prevent="editingPassword = true">{{ 'Change password' | trans }}</a>
                 </div>
                 <div class="uk-form-controls" :class="{'uk-hidden' : (user.id && !editingPassword)}">
-                    <div class="uk-form-password">
-                        <input id="form-password" autocomplete="new-password" class="uk-form-width-large" :type="hidePassword ? 'password' : 'text'" v-model="password">
-                        <a href="#" class="uk-form-password-toggle" @click.prevent="hidePassword = !hidePassword">{{ hidePassword ? 'Show' : 'Hide' | trans }}</a>
+                    <div class="uk-form-password  uk-inline">
+                        <input id="form-password" autocomplete="new-password" class="uk-input uk-form-width-large" :type="hidePassword ? 'password' : 'text'" v-model="password">
+                        <a href="#" class="bk-form-password-toggle" @click.prevent="hidePassword = !hidePassword">{{ hidePassword ? 'Show' : 'Hide' | trans }}</a>
                     </div>
                 </div>
             </div>
 
             <div class="uk-margin">
                 <span class="uk-form-label">{{ 'Status' | trans }}</span>
-                <div class="uk-form-controls uk-form-controls-text">
-                    <p class="uk-form-controls-condensed" v-for="(status, key) in config.statuses">
-                        <label><input type="radio" v-model="user.status" :value="parseInt(key)" :disabled="config.currentUser == user.id"> {{ status }}</label>
-                    </p>
-                </div>
+                <p class="uk-form-controls uk-margin-small" v-for="(status, key) in config.statuses">
+                    <label><input class="uk-radio" type="radio" v-model="user.status" :value="parseInt(key)" :disabled="config.currentUser == user.id"> {{ status }}</label>
+                </p>
             </div>
 
             <div class="uk-margin">
                 <span class="uk-form-label">{{ 'Roles' | trans }}</span>
-                <div class="uk-form-controls uk-form-controls-text">
-                    <p class="uk-form-controls-condensed" v-for="role in config.roles">
-                        <label><input type="checkbox" :value="role.id" :disabled="role.disabled" v-model="user.roles"> {{ role.name }}</label>
-                    </p>
-                </div>
+                <p class="uk-form-controls uk-margin-small" v-for="role in config.roles">
+                  <label><input class="uk-checkbox" type="checkbox" :value="role.id" :disabled="role.disabled" v-model="user.roles"> {{ role.name }}</label>
+                </p>
             </div>
 
             <div class="uk-margin">
@@ -81,13 +76,13 @@
             </div>
         </div>
 
-        <div class="uk-width-medium-1-3 uk-width-large-1-4">
+        <div class="uk-width-1-3@m uk-width-1-4@l">
             <div class="uk-panel uk-card uk-text-center" v-show="user.name">
                 <div class="uk-panel-teaser">
                     <img height="280" width="280" :alt="user.name" v-gravatar="user.email">
                 </div>
 
-                <h3 class="uk-panel-tile uk-margin-bottom-remove uk-text-break">{{ user.name }}
+                <h3 class="uk-panel-tile uk-margin-remove-bottom uk-text-break">{{ user.name }}
                     <i :title="$trans((isNew ? 'New' : config.statuses[user.status]))" :class="{
                         'pk-icon-circle-primary': isNew,
                         'pk-icon-circle-success': user.access && user.status,
@@ -96,7 +91,7 @@
                 </h3>
 
                 <div>
-                    <a class="uk-text-break" :href="'mailto:'+user.email">{{ user.email }}</a><i class="uk-icon-check" :title="$trans('Verified email address')" v-show="config.emailVerification && user.data.verified"></i>
+                    <a class="uk-text-break" :href="'mailto:'+user.email">{{ user.email }}</a><i uk-icon="icon: check" :title="$trans('Verified email address')" v-show="config.emailVerification && user.data.verified"></i>
                 </div>
             </div>
         </div>
