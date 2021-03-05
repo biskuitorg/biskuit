@@ -2,7 +2,7 @@
     <validation-provider :vid="id" :customMessages="errorMessages" :rules="rules" v-slot="{ errors, required, ariaMsg, ariaInput }" slim>
         <div v-if="type !== 'password'" :class="getOption('wrapperClass')">
             <label v-if="label" :for="id" :class="getOption('labelClass')">{{ label | trans }} <span>{{ required ? ' *' : '' }}</span></label>
-            <div :class="getOption('innerWrapperClass')" class="uk-width-1-1 uk-inline">
+            <div :class="getOption('innerWrapperClass')" >
                 <textarea v-if="tag === 'textarea'" :id="id" class="uk-textarea" :class="getOption('elementClass')" :rows="getOption('textarea.rows')" :name="name" :placeholder="placeholder" v-model="innerValue" v-bind="ariaInput" />
                 <template v-else>
                     <a v-if="getOption('icon.type') == 'link'" class="uk-form-icon uk-form-icon-flip" @click.prevent="getOption('icon.callback')"  :uk-tooltip="getOption('icon.label')" :uk-icon="getOption('icon.symbol')"></a>
