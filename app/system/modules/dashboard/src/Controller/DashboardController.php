@@ -138,4 +138,14 @@ class DashboardController
 
         return App::response(file_get_contents($url), 200, ['Content-Type' => 'application/json']);
     }
+
+        /**
+         * @Request({"data": "array"})
+         */
+        public function feedAction($data)
+        {
+            $url = $data['url'];
+
+            return App::response(file_get_contents($url), 200, ['Content-Type' => 'application/rss+xml']);
+        }
 }

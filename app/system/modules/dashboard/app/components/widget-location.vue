@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="uk-panel-badge">
+        <div class="uk-position-top-right">
             <ul class="uk-subnav pk-subnav-icon">
                 <li v-show="!editing">
                     <a class="pk-icon-contrast pk-icon-edit pk-icon-hover uk-hidden" :title="$trans('Edit')" data-uk-tooltip="{delay: 500}" @click.prevent="$parent.edit"></a>
@@ -17,15 +17,19 @@
             </ul>
         </div>
 
-        <form class="pk-panel-teaser uk-form uk-form-stacked" v-show="editing" @submit.prevent>
+        <form class="pk-panel-teaser uk-form-stacked" v-show="editing" @submit.prevent>
 
             <div class="uk-margin">
-                <label for="form-city" class="uk-form-label">{{ 'Location' | trans }}</label>
 
-                <div class="uk-form-controls">
-                    <div ref="autocomplete" class="uk-autocomplete uk-width-1-1">
-                        <input id="form-city" class="uk-width-1-1" type="text" :placeholder="location" ref="location" @blur="clear" autocomplete="off">
-                    </div>
+                <div>
+                  <label for="form-city" class="uk-form-label">{{ 'Location' | trans }}</label>
+                  <multiselect v-model="selectedCities" id="ajax" ref="location" label="name" track-by="id" placeholder="Type to search" open-direction="bottom" :options="cities" :multiple="false" :searchable="true" :loading="isLoading" :internal-search="false" :clear-on-select="false" :close-on-select="true" :options-limit="300" :limit="3" :limit-text="limitText" :max-height="600" :show-no-results="false" :hide-selected="false" @search-change="asyncFind" @select="updateWidget">
+                    <template slot="tag" slot-scope="{ option, remove }"><span class="custom__tag"><span>{{ option.name }}</span><span class="custom__remove" @click="remove(option)">❌</span></span></template>
+                    <template slot="clear" slot-scope="props">
+                      <div class="multiselect__clear" v-if="selectedCities.length" @mousedown.prevent.stop="clearAll(props.search)"></div>
+                    </template><span slot="noResult">Oops! No elements found. Consider changing the search query.</span>
+                  </multiselect>
+                  <pre class="language-json"><code>{{ selectedCities  }}</code></pre>
                 </div>
             </div>
 
@@ -33,11 +37,11 @@
                 <span class="uk-form-label">{{ 'Unit' | trans }}</span>
 
                 <div class="uk-form-controls uk-form-controls-text">
-                    <p class="uk-form-controls-condensed">
+                    <p class="uk-form-controls uk-margin-small">
                         <label><input type="radio" value="metric" v-model="widget.units"> {{ 'Metric' | trans }}</label>
                     </p>
 
-                    <p class="uk-form-controls-condensed">
+                    <p class="uk-form-controls uk-margin-large-bottom">
                         <label><input type="radio" value="imperial" v-model="widget.units"> {{ 'Imperial' | trans }}</label>
                     </p>
                 </div>
@@ -45,13 +49,13 @@
 
         </form>
 
-        <div class="pk-panel-background uk-light" v-if="status != 'loading'">
+        <div class="bk-panel-background uk-light" v-if="status != 'loading'">
             <h1 class="uk-margin-large-top uk-margin-small-bottom uk-text-center pk-text-xlarge" v-if="time">{{ time | date(format) }}</h1>
 
             <h2 class="uk-text-center uk-h4 uk-margin-remove" v-if="time">{{ time | date('longDate') }}</h2>
-            <div class="uk-margin-large-top uk-flex uk-flex-middle uk-flex-space-between uk-flex-wrap" data-uk-margin>
+            <div class="uk-margin-large-top uk-flex uk-flex-middle uk-flex-between uk-flex-wrap">
                 <h3 class="uk-margin-remove" v-if="widget.city">{{ widget.city }}</h3>
-                <h3 class="uk-flex uk-flex-middle uk-margin-remove" v-if="status=='done'">{{ temperature }} <img class="uk-margin-small-left" :src="icon" width="25" height="25" alt="Weather"></h3>
+                <h3 class="uk-flex uk-flex-middle uk-margin-remove" v-if="status=='done'"> {{ temperature }} <img class="uk-margin-small-left" :src="icon" width="25" height="25" alt="Weather"></h3>
             </div>
         </div>
 
@@ -62,11 +66,15 @@
 </template>
 
 <script>
+import Multiselect from 'vue-multiselect';
     export default {
+        components: {
+          Multiselect
+        },
         type: {
             id: 'location',
             label: 'Location',
-            disableToolbar: true,
+            disableToolbar: false,
             description: () => {},
             defaults: {
                 units: 'metric'
@@ -82,54 +90,14 @@
                 icon: '',
                 temp: 0,
                 time: 0,
-                format: 'shortTime'
+                format: 'shortTime',
+                selectedCities: [],
+                cities: [],
+                isLoading: false
             };
         },
 
         mounted() {
-            const vm = this;
-            let list;
-
-            UIkit
-                .autocomplete(this.$refs.autocomplete, {
-                    source(release) {
-                        vm.$http.get('admin/dashboard/weather', { params: { action: 'find', data: { q: this.input.val(), type: 'like' } } }).then(
-                            (res) => {
-                                const { data } = res;
-                                list = data.list || [];
-                                release(list);
-                            },
-                            () => {
-                                release([]);
-                            });
-                    },
-
-                    template: '<ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">\
-                                  {{~items}}<li data-id="{{$item.id}}"><a>{{$item.name}} <span>, {{$item.sys.country}}</span></a></li>{{/items}}\
-                                  {{^items.length}}<li class="uk-skip"><a class="uk-text-muted">{{msgNoResults}}</a></li>{{/end}} \
-                               </ul>',
-
-                    renderer(data) {
-                        this.dropdown.append(this.template({ items: data || [], msgNoResults: vm.$trans('No location found.') }));
-                        this.show();
-                    }
-                })
-                .on('selectitem.uk.autocomplete', function (e, data) {
-                    const location = _.find(list, ['id', data.id]);
-
-                    Vue.nextTick(function () {
-                        vm.$refs.location.blur();
-                    });
-
-                    if (!location) {
-                        return;
-                    }
-
-                    vm.$set(vm.widget, 'uid', location.id);
-                    vm.$set(vm.widget, 'city', location.name);
-                    vm.$set(vm.widget, 'country', location.sys.country);
-                    vm.$set(vm.widget, 'coords', location.coord);
-                });
 
             this.timer = setInterval(this.updateClock(), 60 * 1000);
         },
@@ -236,13 +204,43 @@
                 return this.updateClock;
             },
 
-            clear() {
-                this.$refs.location.value = '';
-            }
-        },
 
-        destroyed() {
-            clearInterval(this.timer);
-        }
+          destroyed() {
+              clearInterval(this.timer);
+          },
+
+          limitText (count) {
+            return 'and {count} other cities';
+          },
+
+          asyncFind (query) {
+            if(query.length >=3) {
+              this.isLoading = true;
+              this.$http.get('admin/dashboard/weather', { params: { action: 'find', data: { q: query, type: 'like' } } }).then(
+                  function (res) {
+                      const { data } = res;
+                      if (data.cod == 200) {
+                        this.list = data.list || [];
+                        this.cities = this.list;
+                      } else {
+                          this.status = 'error';
+                      }
+                      this.isLoading = false;
+                  });
+            }
+          },
+          updateWidget(location)  {
+            console.log(location.id);
+            this.$set(this.widget, 'uid', location.id);
+            this.$set(this.widget, 'city', location.name);
+            this.$set(this.widget, 'country', location.sys.country);
+            this.$set(this.widget, 'coords', location.coord);
+          },
+
+          clearAll () {
+            this.selectedCities = [];
+          }
+
     }
+  }
 </script>

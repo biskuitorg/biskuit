@@ -1,18 +1,18 @@
 <template>
     <div>
-        <div class="uk-panel-badge" v-if="!type.disableToolbar">
-            <ul class="uk-subnav pk-subnav-icon">
+        <div class="uk-card-badge" v-if="!type.disableToolbar">
+            <ul class="uk-subnav">
                 <li v-show="type.editable !== false && !innerEditing">
-                    <a class="pk-icon-edit pk-icon-hover uk-hidden" :title="$trans('Edit')" data-uk-tooltip="{delay: 500}" @click.prevent="edit"></a>
+                    <a uk-icon="icon: pencil" class="uk-hidden-hover" :title="$trans('Edit')" data-uk-tooltip="{delay: 500}" @click.prevent="edit"></a>
                 </li>
                 <li v-show="!innerEditing">
-                    <a class="pk-icon-handle pk-icon-hover uk-hidden uk-sortable-handle" :title="$trans('Drag')" data-uk-tooltip="{delay: 500}"></a>
+                    <a uk-icon="icon: move "class="uk-hidden-hover uk-sortable-handle" :title="$trans('Drag')" data-uk-tooltip="{delay: 500}"></a>
                 </li>
                 <li v-show="innerEditing">
-                    <a class="pk-icon-delete pk-icon-hover" :title="$trans('Delete')" data-uk-tooltip="{delay: 500}" @click.prevent="remove" v-confirm="'Delete widget?'"></a>
+                    <a uk-icon="icon: trash" :title="$trans('Delete')" data-uk-tooltip="{delay: 500}" @click.prevent="remove" v-confirm="'Delete widget?'"></a>
                 </li>
                 <li v-show="innerEditing">
-                    <a class="pk-icon-check pk-icon-hover" :title="$trans('Close')" data-uk-tooltip="{delay: 500}" @click.prevent="save"></a>
+                    <a uk-icon="icon: check" :title="$trans('Close')" data-uk-tooltip="{delay: 500}" @click.prevent="save"></a>
                 </li>
             </ul>
         </div>

@@ -59,9 +59,9 @@
 
         <div v-if="status != 'loading'">
 
-            <h3 class="uk-panel-title" v-if="widget.title">{{ widget.title }}</h3>
+            <h3 class="uk-text-large uk-text-lighter" v-if="widget.title">{{ widget.title }}</h3>
 
-            <ul class="uk-list uk-list-line uk-margin-remove">
+            <ul class="uk-list uk-list-divider uk-margin-remove">
                 <li v-for="(item, index) in count(feed.items)">
                     <a :href="item.link" target="_blank">{{ item.title }}</a> <span :title="$date(item.isoDate, 'medium')" class="uk-text-muted uk-text-nowrap">{{ item.isoDate | relativeDate }}</span>
 
@@ -142,14 +142,25 @@
                 }
 
                 this.status = 'loading';
-                // TODO: CORS policies might block the request
-                const parser = new RSSParser();
-                parser.parseURL(this.widget.url)
-                    .then((feed) => {
-                        vm.feed = feed;
-                        vm.status = 'done';
-                    }, (err) => {
-                        vm.status = 'error';
+                this.$http.get('admin/dashboard/feed', { params: { data: { url: this.widget.url} } }).then(
+                    function (res) {
+                        const { data } = res;
+                        if (res.status == 200) {
+                            const parser = new RSSParser();
+                            parser.parseString(res.body)
+                                .then((feed) => {
+                                    vm.feed = feed;
+                                    vm.status = 'done';
+                                }, (err) => {
+                                    vm.status = 'error';
+                                }
+                            );
+                        } else {
+                            this.status = 'error';
+                        }
+                    },
+                    function () {
+                        this.status = 'error';
                     }
                 );
             }
