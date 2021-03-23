@@ -17,21 +17,19 @@
             </ul>
         </div>
 
-        <form class="pk-panel-teaser uk-form-stacked" v-show="editing" @submit.prevent>
+        <form  v-show="editing" @submit.prevent>
 
-            <div class="uk-margin">
+        <div class="uk-margin">
 
-                <div>
-                  <label for="form-city" class="uk-form-label">{{ 'Location' | trans }}</label>
-                  <multiselect v-model="selectedCities" id="ajax" ref="location" label="name" track-by="id" placeholder="Type to search" open-direction="bottom" :options="cities" :multiple="false" :searchable="true" :loading="isLoading" :internal-search="false" :clear-on-select="false" :close-on-select="true" :options-limit="300" :limit="3" :limit-text="limitText" :max-height="600" :show-no-results="false" :hide-selected="false" @search-change="asyncFind" @select="updateWidget">
-                    <template slot="tag" slot-scope="{ option, remove }"><span class="custom__tag"><span>{{ option.name }}</span><span class="custom__remove" @click="remove(option)">❌</span></span></template>
-                    <template slot="clear" slot-scope="props">
-                      <div class="multiselect__clear" v-if="selectedCities.length" @mousedown.prevent.stop="clearAll(props.search)"></div>
-                    </template><span slot="noResult">Oops! No elements found. Consider changing the search query.</span>
-                  </multiselect>
-                  <pre class="language-json"><code>{{ selectedCities  }}</code></pre>
-                </div>
-            </div>
+
+              <label class="typo__label" for="location">{{ 'Location' | trans }}</label>
+              <multiselect  v-model="selectedCity" id="location" ref="location" label="name" track-by="id" placeholder="Type to search" open-direction="bottom" :showNoOptions="false" :custom-label="customLabel" :options="cities" :multiple="false" :searchable="true" :loading="isLoading" :internal-search="false" :clear-on-select="false" :close-on-select="true" :options-limit="300" :limit="3" :limit-text="limitText" :max-height="600" :show-no-results="false" :hide-selected="false" @search-change="asyncFind" @select="updateWidget">
+                <template slot="tag" slot-scope="{ option, remove }"><span class="custom__tag"><span>{{ option.name }}</span><span class="custom__remove" @click="remove(option)">x</span></span></template>
+                <template slot="clear" slot-scope="props">
+                  <div class="multiselect__clear" v-if="selectedCity.length" @mousedown.prevent.stop="clearAll(props.search)"></div>
+                </template><span slot="noResult">{{'No location found.' | trans }}</span>
+              </multiselect>
+        </div>
 
             <div class="uk-margin">
                 <span class="uk-form-label">{{ 'Unit' | trans }}</span>
@@ -58,7 +56,6 @@
                 <h3 class="uk-flex uk-flex-middle uk-margin-remove" v-if="status=='done'"> {{ temperature }} <img class="uk-margin-small-left" :src="icon" width="25" height="25" alt="Weather"></h3>
             </div>
         </div>
-
         <div class="uk-text-center" v-else>
             <v-loader></v-loader>
         </div>
@@ -91,14 +88,15 @@ import Multiselect from 'vue-multiselect';
                 temp: 0,
                 time: 0,
                 format: 'shortTime',
-                selectedCities: [],
+                selectedCity: [],
                 cities: [],
                 isLoading: false
             };
         },
 
         mounted() {
-
+          const vm = this;
+            this.load();
             this.timer = setInterval(this.updateClock(), 60 * 1000);
         },
 
@@ -154,16 +152,6 @@ import Multiselect from 'vue-multiselect';
                         this.status = 'error';
                     }
                 );
-
-                /* TODO: google api requires account and billing information ==> could cause costs
-                this.$http.get('https://maps.googleapis.com/maps/api/timezone/json', { params: { location: `${this.widget.coords.lat},${this.widget.coords.lon}`, timestamp: Math.floor(Date.now() / 1000) }, cache: { key: `timezone-${this.widget.coords.lat},${this.widget.coords.lon}`, lifetime: 1440 } })
-                    .then(function (res) {
-                        let { data } = res;
-                        data.offset = data.rawOffset + data.dstOffset;
-                        this.timezone = data;
-                    }, function () {
-                        this.status = 'error';
-                    });*/
             },
 
             init(data) {
@@ -229,8 +217,12 @@ import Multiselect from 'vue-multiselect';
                   });
             }
           },
+
+          customLabel ( { name, sys }) {
+            return `${name} – ${sys['country']}`
+          },
+
           updateWidget(location)  {
-            console.log(location.id);
             this.$set(this.widget, 'uid', location.id);
             this.$set(this.widget, 'city', location.name);
             this.$set(this.widget, 'country', location.sys.country);
@@ -238,9 +230,8 @@ import Multiselect from 'vue-multiselect';
           },
 
           clearAll () {
-            this.selectedCities = [];
-          }
-
+            this.selectedCity = [];
+          },
     }
   }
 </script>
