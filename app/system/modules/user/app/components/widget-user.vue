@@ -59,17 +59,18 @@
 
         </form>
 
-        <div class="pk-text-large" v-if="widget.total">{{ userscount }}</div>
+        <div class="uk-text-lead" v-if="widget.total">{{ userscount }}
 
-        <h3 class="uk-panel-title" v-if="widget.show == 'registered' && widget.total">{{ '{0} Registered Users|{1} Registered User|]1,Inf[ Registered Users' | transChoice(userscount) }}</h3>
+          <h3 class="uk-text-large uk-text-lighter" v-if="widget.show == 'registered' && widget.total">{{ '{0} Registered Users|{1} Registered User|]1,Inf[ Registered Users' | transChoice(userscount) }}</h3>
 
-        <h3 class="uk-panel-title" v-if="widget.show != 'registered' && widget.total">{{ '{0} Logged in Users|{1} Logged in User|]1,Inf[ Logged in Users' | transChoice(userscount) }}</h3>
+          <h3 class="uk-text-large uk-text-lighter" v-if="widget.show != 'registered' && widget.total">{{ '{0} Logged in Users|{1} Logged in User|]1,Inf[ Logged in Users' | transChoice(userscount) }}</h3>
 
-        <h3 class="uk-panel-title" v-if="widget.show == 'registered' && !widget.total">{{ 'Latest registered Users' | trans }}</h3>
+          <h3 class="uk-text-large uk-text-lighter" v-if="widget.show == 'registered' && !widget.total">{{ 'Latest registered Users' | trans }}</h3>
 
-        <h3 class="uk-panel-title" v-if="widget.show != 'registered' && !widget.total">{{ 'Latest logged in Users' | trans }}</h3>
+          <h3 class="uk-text-large uk-text-lighter" v-if="widget.show != 'registered' && !widget.total">{{ 'Latest logged in Users' | trans }}</h3>
 
-        <ul v-if="users.length && widget.display == 'thumbnail'" data-user class="uk-grid uk-grid-small uk-grid-width-1-4 uk-grid-width-small-1-6 uk-grid-width-medium-1-4 uk-grid-width-xlarge-1-6" v-stack-margin="users">
+        </div>
+        <ul v-if="users.length && widget.display == 'thumbnail'" data-user class="uk-grid uk-grid-small uk-child-width-1-6@s uk-child-width-1-4@m uk-child-width-1-6@xl" v-stack-margin="users">
             <li v-for="user in users">
                 <a :href="$url.route('admin/user/edit', {id: user.id})" :title="user.username">
                     <img class="uk-border-rounded" width="100" height="100" :alt="user.name" v-gravatar="user.email">

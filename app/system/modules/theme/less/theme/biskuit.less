@@ -141,6 +141,34 @@
     display: block;
 }
 
+
+/* Admin: Dashboard
+========================================================================== */
+
+.bk-sortable {
+    padding: 0;
+    list-style: none;
+    min-height: 300px;
+}
+
+.bk-sortable > li + li { margin-top: @grid-gutter-vertical; }
+
+.bk-sortable-dragged-panel > * { box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+
+.bk-sortable-dragged-panel .uk-visible-toggle,
+.bk-sortable-dragged-panel .uk-invisible {
+    display: inline-block !important;
+    visibility: visible !important;
+}
+
+.bk-panel-background {
+    margin: -40px;
+    padding: 40px;
+    background: @global-primary-background url("../../../../assets/images/dashboard-location.jpg") 0 0 no-repeat;
+    background-size: cover;
+}
+
+
 /* Admin: User
 ========================================================================== */
 .bk-form-password-toggle {

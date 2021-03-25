@@ -31,39 +31,36 @@ window.Dashboard = {
 
     mounted() {
         const self = this;
+        const sortables = UIkit.util.$$('.uk-sortable[data-column]');
 
-        // widget re-ordering
-        const sortables = $(this.$el).find('.uk-sortable[data-column]').each(function () {
+        UIkit.util.on(sortables, "added moved removed", function(e, sortable, item) {
 
-            UIkit.sortable(this, {group: 'widgets', dragCustomClass: 'pk-sortable-dragged-panel', handleClass: 'pk-icon-handle'});
-
-        }).on('change.uk.sortable', function (e, sortable, item, mode) {
-            if (!mode) {
-                return;
-            }
-
-            sortable = sortable.element ? sortable : sortable.data('sortable');
-
-            switch (mode) {
+            switch (e.type) {
                 case 'added':
+                case 'removed':
+
                 case 'moved':
                     const widgets = self.widgets;
-                    const column = parseInt(sortable.element.data('column'), 10);
+                    const column = UIkit.util.data(sortable.$el, "column");
                     let data = {};
                     let widget;
 
-                    sortable.element.children('[data-idx]').each(function (idx) {
-                        widget = _.find(widgets, ['id', this.getAttribute('data-id')]);
+                    //widget = _.find(widgets, ['id', UIkit.util.data(item, "id")]);
+                    //widget.column = column;
+                    //widget.idx = UIkit.util.data(item, "idx");
+                    sortable.items.forEach(function (item) {
+                        widget = _.find(widgets, ['id', UIkit.util.data(item, "id")]);
                         widget.column = column;
-                        widget.idx = idx;
+                        widget.idx = UIkit.util.data(item, "idx");
                     });
 
                     widgets.forEach(function (widget) {
                         data[widget.id] = widget;
                     });
 
-                    self.$http.post('admin/dashboard/savewidgets', { widgets: data });
+                  self.$http.post('admin/dashboard/savewidgets', { widgets: data });
             }
+
         });
     },
 
@@ -84,19 +81,18 @@ window.Dashboard = {
         },
 
         add(type) {
-            const sortables = $('#dashboard').find('.uk-sortable[data-column]');
-            let column = 0;
+             const sortables = UIkit.util.$$('.uk-sortable[data-column]');
+             let column = 0;
+             sortables.forEach(function (sortable, index) {
+               column = (sortable.childElementCount < sortables[0].childElementCount) ? index : column;
+             });
 
-            sortables.each(function (idx) {
-                column = (this.children.length < sortables.eq(column)[0].children.length) ? idx : column;
-            });
-
-            this.Widgets.save({widget: _.merge({type: type.id, column: column, idx: 100}, type.defaults)}).then(function (res) {
-                const { data } = res;
-                this.widgets.push(data);
-                this.editing[data.id] = true;
-            });
-        },
+             this.Widgets.save({widget: _.merge({type: type.id, column: column, idx: 100}, type.defaults)}).then(function (res) {
+                 const { data } = res;
+                 this.widgets.push(data);
+                 this.editing[data.id] = true;
+             });
+         },
 
         save(widget) {
             const data = { widget };
@@ -105,6 +101,7 @@ window.Dashboard = {
         },
 
         remove(widget) {
+          console.log(widget.id);
             this.Widgets.delete({ id: widget.id }).then(function () {
                 this.widgets.splice(_.findIndex(this.widgets, { id: widget.id }), 1);
             });
