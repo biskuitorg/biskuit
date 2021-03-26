@@ -41,7 +41,20 @@ return [
 
         'site' => function ($event, $app) {
             $app->on('view.meta', function ($event, $meta) use ($app) {
-                $meta->add('canonical', $app['url']->get($app['request']->attributes->get('_route'), $app['request']->attributes->get('_route_params', []), 0));
+
+                if ((isset($_SERVER['HTTPS']) && (($_SERVER['HTTPS'] == 'on') || ($_SERVER['HTTPS'] == '1'))) || (isset($_SERVER['HTTPS']) && $_SERVER['SERVER_PORT'] == 443)) {
+                    $_SERVER['HTTPS'] = true;
+                } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on') {
+                    $_SERVER['HTTPS'] = true;
+                } else {
+                    $_SERVER['HTTPS'] = false;
+                }
+
+                $url = $app['url']->get($app['request']->attributes->get('_route'), $app['request']->attributes->get('_route_params', []), 0);
+                if (substr($url, 0, 5) === "http:" && $_SERVER['HTTPS'] === true) {
+                    $url = str_replace(substr($url, 0, 4), "https", $url);
+                }
+                $meta->add('canonical', $url);
             }, 60);
         },
 
