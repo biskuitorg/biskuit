@@ -1,0 +1,56 @@
+name: Webhost Release Unstable
+
+on: 
+  push:
+    branches: [ dev ]
+  workflow_dispatch:
+    
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Updating base image
+        run: sudo apt update && sudo apt upgrade
+
+      - name: Installing zip 
+        run: sudo apt install zip -y
+
+      - name: Installing php
+        run: sudo apt install php php-xml php-mbstring php-curl php-zip -y
+
+      - name: Installing Node
+        run: sudo apt install nodejs npm -y
+      
+      - name: Installing composer
+        run: |
+          curl -sS https://getcomposer.org/installer -o composer-setup.php 
+          sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+          rm composer-setup.php
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install PHP dependencies
+        run: composer install --prefer-dist 
+      
+      - name: Install Node depencencies
+        run: npm install
+
+      - name: Zipping the folder
+        run: zip -r unstable_webhost_ready.zip biskuit/
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          draft: false
+          prerelease: false
+          automatic_release_tag: unstable
+          title: Unstable build
+          files: unstable_webhost_ready.zip
