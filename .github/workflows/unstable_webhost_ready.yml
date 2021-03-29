@@ -29,8 +29,8 @@ jobs:
           sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
           rm composer-setup.php
 
-      - name: Validate composer.json and composer.lock
-        run: composer validate --strict
+      - name: Validate composer 
+        run: composer validate --no-check-lock
 
   build:
     needs: test
@@ -39,7 +39,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Updating base image
-        run: sudo apt update && sudo apt upgrade
+        run: sudo apt update
 
       - name: Installing zip 
         run: sudo apt install zip -y
@@ -63,7 +63,9 @@ jobs:
         run: npm install
 
       - name: Zipping the folder
-        run: zip -r unstable_webhost_ready.zip biskuit/
+        run: |
+          cd ..
+          zip -r unstable_webhost_ready.zip biskuit/
 
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
