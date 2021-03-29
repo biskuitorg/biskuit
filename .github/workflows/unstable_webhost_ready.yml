@@ -6,8 +6,28 @@ on:
   workflow_dispatch:
     
 jobs:
+  test:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Updating base image
+        run: sudo apt update
+
+      - name: Installing zip 
+        run: sudo apt install zip -y
+
+      - name: Validate Composer
+        uses: php-actions/composer@v5
+        with:
+          dev: no
+          php_version: 7.4
+          command: validate
+          args: --no-check-lock
+
   build:
-    runs-on: ubuntu-latest
+    needs: test
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
 
@@ -41,4 +61,4 @@ jobs:
           prerelease: false
           automatic_release_tag: unstable
           title: Unstable build
-          files: unstable_webhost_ready.zip
+          files: ../unstable_webhost_ready.zip
