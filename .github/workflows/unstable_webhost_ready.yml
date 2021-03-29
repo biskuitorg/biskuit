@@ -18,7 +18,7 @@ jobs:
         run: sudo apt install zip -y
 
       - name: Installing php
-        run: sudo apt install php php-xml php-mbstring php-curl php-zip -y
+        run: sudo apt install php7.4 php7.4-xml php7.4-mbstring php7.4-curl php7.4-zip -y
       
       - name: Installing composer
         run: |
@@ -42,7 +42,7 @@ jobs:
         run: sudo apt install zip -y
 
       - name: Installing php
-        run: sudo apt install php php-xml php-mbstring php-curl php-zip -y
+        run: sudo apt install php7.4 php7.4-xml php7.4-mbstring php7.4-curl php7.4-zip -y
 
       - name: Installing Node
         run: sudo apt install nodejs npm -y
