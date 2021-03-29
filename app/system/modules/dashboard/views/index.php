@@ -23,14 +23,11 @@
           </div>
         </div>
     </div>
-
-    <div class="uk-grid uk-grid-medium uk-grid-match" uk-grid id="sortable-widgets" uk-sortable>
-        <div class="uk-width-1-3@m " v-for="i in [0,1,2]">
-            <ul class="uk-sortable bk-sortable" :data-column="i" uk-sortable="group: widgets">
-                <li v-for="widget in getWidgetsForColumn(i)" :data-id="widget.id" :data-idx="widget.idx" :key="widget.id">
-                    <panel class="uk-card and uk-card-default uk-card-body uk-visible-toggle" :widget="widget" :editing="editing[widget.id]" v-on:editing="editing[widget.id] = $event"></panel>
-                </li>
-            </ul>
+    <div class="uk-child-width-1-3@s" uk-grid>
+      <div v-for="i in [0,1,2]" :data-column="i" uk-sortable="group: widgets">
+        <div class="uk-margin" v-for="widget in getWidgetsForColumn(i)" :data-id="widget.id" :data-idx="widget.idx" :key="widget.id">
+            <panel class="uk-card and uk-card-default uk-card-body uk-visible-toggle" :widget="widget" :editing="editing[widget.id]" v-on:editing="editing[widget.id] = $event"></panel>
         </div>
+      </div>
     </div>
 </div>
