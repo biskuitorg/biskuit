@@ -3,7 +3,7 @@ import Version from '../../../../../installer/app/lib/version';
 import Panel from '../components/widget-panel.vue';
 import Feed from '../components/widget-feed.vue';
 import Location from '../components/widget-location.vue';
-
+import util from 'uikit-util';
 window.Dashboard = {
 
     el: '#dashboard',
@@ -31,9 +31,9 @@ window.Dashboard = {
 
     mounted() {
         const self = this;
-        const sortables = UIkit.util.$$('.uk-sortable[data-column]');
+        const sortables = util.$$('.uk-sortable[data-column]');
 
-        UIkit.util.on(sortables, "added moved removed", function(e, sortable, item) {
+        util.on(sortables, "added moved removed", function(e, sortable, item) {
 
             switch (e.type) {
                 case 'added':
@@ -41,17 +41,15 @@ window.Dashboard = {
 
                 case 'moved':
                     const widgets = self.widgets;
-                    const column = UIkit.util.data(sortable.$el, "column");
+                    const column = util.data(sortable.$el, "column");
                     let data = {};
                     let widget;
 
-                    //widget = _.find(widgets, ['id', UIkit.util.data(item, "id")]);
-                    //widget.column = column;
-                    //widget.idx = UIkit.util.data(item, "idx");
-                    sortable.items.forEach(function (item) {
-                        widget = _.find(widgets, ['id', UIkit.util.data(item, "id")]);
+
+                    sortable.items.forEach(function (item,index) {
+                        widget = _.find(widgets, ['id', util.data(item, "id")]);
                         widget.column = column;
-                        widget.idx = UIkit.util.data(item, "idx");
+                        widget.idx = index;
                     });
 
                     widgets.forEach(function (widget) {
@@ -81,7 +79,7 @@ window.Dashboard = {
         },
 
         add(type) {
-             const sortables = UIkit.util.$$('.uk-sortable[data-column]');
+             const sortables = util.$$('.uk-sortable[data-column]');
              let column = 0;
              sortables.forEach(function (sortable, index) {
                column = (sortable.childElementCount < sortables[0].childElementCount) ? index : column;
@@ -101,7 +99,6 @@ window.Dashboard = {
         },
 
         remove(widget) {
-          console.log(widget.id);
             this.Widgets.delete({ id: widget.id }).then(function () {
                 this.widgets.splice(_.findIndex(this.widgets, { id: widget.id }), 1);
             });
