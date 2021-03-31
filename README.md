@@ -4,7 +4,7 @@
 > We are working on the conversion from uikit2 to uikit3. We are a small team and do this as a hobby.
 
 # Biskuit CMS
-[![Discord](https://img.shields.io/discord/682566394222477378)](https://discord.gg/aBdqDcE)
+[![Discord](https://img.shields.io/discord/678544016333078560?logo=discord&label=Discord&color=brightgreen&style=for-the-badge)](https://ds.unifiedban.solutions/)
 
 Bis[ku]it is a modular and lightweight CMS built with Symfony components and Vue.js.
 
