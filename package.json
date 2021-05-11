@@ -30,7 +30,7 @@
     "html-loader": "^1.1.0",
     "jquery": "^2.1.4",
     "less": "^3.11.3",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "marked": "^1.1.0",
     "merge-stream": "^2.0.0",
     "rss-parser": "^3.8.0",
